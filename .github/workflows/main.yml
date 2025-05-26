@@ -1,19 +1,16 @@
-on: workflow_dispatch
+on: [push]
 
 jobs:
   hello_world_job:
     runs-on: ubuntu-latest
     name: A job to say hello
     steps:
-      # To use this repository's private action,
-      # you must check out the repository
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Hello world action step
-        uses: ./.github/hello-world-docker-action # Uses an action in the root directory
-        id: hello
+      - uses: actions/checkout@v4
+      - id: foo
+        uses: rukshanperera/hello-world-composite-action@d388581532d24d00f0242a138e94fbd84d0b99de
         with:
           who-to-greet: 'Mona the Octocat'
-      # Use the output from the `hello` step
-      - name: Get the output time
-        run: echo "The time was ${{ steps.hello.outputs.time }}"
+      - run: echo random-number "$RANDOM_NUMBER"
+        shell: bash
+        env:
+          RANDOM_NUMBER: ${{ steps.foo.outputs.random-number }}
